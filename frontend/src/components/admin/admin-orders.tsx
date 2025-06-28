@@ -11,6 +11,7 @@ import { ChangeEvent, FormEvent, useCallback, useEffect, useState } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { fetchOrdersWithFilters } from '../../services/slice/orders/thunk'
 import styles from './admin.module.scss'
+import useCsrfToken from '../../hooks/useCsrfToken'
 
 export default function AdminOrders() {
     const dispatch = useDispatch()
@@ -86,6 +87,8 @@ export default function AdminOrders() {
         dispatch(fetchOrdersWithFilters(filters))
     }, [searchParams, dispatch, updateFilter])
 
+    const csrfToken = useCsrfToken()
+    
     return (
         <main className={clsx(styles.admin__products, styles.admin__container)}>
             <div className={styles.admin__headerTitle}>
@@ -99,6 +102,7 @@ export default function AdminOrders() {
                     className={styles.admin__formSearch}
                     onSubmit={(e) => handleSearch(e, searchOrder)}
                 >
+                    <input type="hidden" name="_csrf" value={csrfToken} />
                     <Input
                         onChange={handleInputChange}
                         extraClassLabel={styles.admin__searchLabel}

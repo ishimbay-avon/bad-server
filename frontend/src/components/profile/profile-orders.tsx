@@ -13,6 +13,7 @@ import { IOrderPaginationResult } from '../../utils/types'
 import Pagination from '../pagination'
 import usePagination from '../pagination/helpers/usePagination'
 import styles from './profile.module.scss'
+import useCsrfToken from '../../hooks/useCsrfToken'
 
 export default function ProfileOrders() {
     const dispatch = useDispatch()
@@ -99,9 +100,12 @@ export default function ProfileOrders() {
             })
             setSearchParams({ ...filters, search: value })
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [searchParams, dispatch, setSearchParams]
     )
 
+    const csrfToken = useCsrfToken()
+    
     return (
         <main
             className={clsx(
@@ -116,6 +120,7 @@ export default function ProfileOrders() {
                 className={styles.profile__formSearch}
                 onSubmit={(e) => handleSearch(e, searchOrder)}
             >
+                <input type="hidden" name="_csrf" value={csrfToken} />
                 <Input
                     onChange={handleInputChange}
                     extraClassLabel={styles.profile__searchLabel}

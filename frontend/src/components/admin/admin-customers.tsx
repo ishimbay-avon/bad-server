@@ -14,6 +14,7 @@ import {
 } from '../../services/slice/customers'
 import { fetchCustomersWithFilters } from '../../services/slice/customers/thunk'
 import styles from './admin.module.scss'
+import useCsrfToken from '../../hooks/useCsrfToken'
 
 export default function AdminCustomers() {
     const dispatch = useDispatch()
@@ -104,6 +105,8 @@ export default function AdminCustomers() {
         dispatch(fetchCustomersWithFilters(filters))
     }, [searchParams, dispatch, updateFilter])
 
+    const csrfToken = useCsrfToken()
+    
     return (
         <main className={clsx(styles.admin__products, styles.admin__container)}>
             <div className={styles.admin__headerTitle}>
@@ -117,6 +120,7 @@ export default function AdminCustomers() {
                     className={styles.admin__formSearch}
                     onSubmit={(e) => handleSearch(e, searchCustomers)}
                 >
+                    <input type="hidden" name="_csrf" value={csrfToken} />
                     <Input
                         onChange={handleInputChange}
                         extraClassLabel={styles.admin__searchLabel}

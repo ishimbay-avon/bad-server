@@ -50,5 +50,12 @@ const fileFilter = (
 
     return cb(null, true)
 }
-
-export default multer({ storage, fileFilter })
+// 1. Защита от XSS (Межсайтовый скриптинг)
+// Санитизация файлов
+export default multer({ 
+    storage, 
+    limits: { 
+        fileSize: 5000000, // 5MB на файл
+    },
+    fileFilter 
+})

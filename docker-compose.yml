@@ -15,6 +15,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
       - db:/data/db
+      - ./.dump:/dump
     ports:
       - 27017:27017
     networks:
