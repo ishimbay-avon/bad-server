@@ -49,11 +49,12 @@ export const uploadFile = async (
   }
 
   try {
-    const fileName2 = process.env.UPLOAD_PATH_TEMP
+    const fileName = process.env.UPLOAD_PATH_TEMP
       ? path.join('/', process.env.UPLOAD_PATH_TEMP, req.file.filename)
       : path.join('/', req.file.filename)
-console.log(fileName2);
-    return res.status(constants.HTTP_STATUS_CREATED).send({ fileName:fileName2, originalName:req.file.filename })
+console.log(fileName);
+    // return res.status(constants.HTTP_STATUS_CREATED).send({ fileName:fileName2, originalName:req.file.filename })
+    return res.status(constants.HTTP_STATUS_CREATED).send({ fileName })
   } catch (error) {
     return next(error)
   }

@@ -63,7 +63,7 @@ export const validateProductBody = celebrate({
         }),
         image: Joi.object().keys({
             fileName: Joi.string().required().max(100),
-            originalName: Joi.string().required().max(100),
+            originalName: Joi.string().required().max(100).optional(),
         }),
         category: Joi.string().required().max(50).messages({
             'string.empty': 'Поле "category" должно быть заполнено',
