@@ -86,6 +86,14 @@ export default function AdminOrders() {
         dispatch(fetchOrdersWithFilters(filters))
     }, [searchParams, dispatch, updateFilter])
 
+function getCsrfToken() {
+  const cookieValue = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('XSRF-TOKEN='))
+    ?.split('=')[1];
+  return cookieValue || '';
+}
+    
     return (
         <main className={clsx(styles.admin__products, styles.admin__container)}>
             <div className={styles.admin__headerTitle}>
@@ -99,6 +107,7 @@ export default function AdminOrders() {
                     className={styles.admin__formSearch}
                     onSubmit={(e) => handleSearch(e, searchOrder)}
                 >
+                    <input type="hidden" name="_csrf" value={getCsrfToken()} />
                     <Input
                         onChange={handleInputChange}
                         extraClassLabel={styles.admin__searchLabel}

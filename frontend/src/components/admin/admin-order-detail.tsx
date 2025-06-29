@@ -124,6 +124,7 @@ export default function AdminOrderDetail() {
                 extraClass: styles.admin__gridRowFullWidth,
             },
         ],
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [orderData]
     )
 
