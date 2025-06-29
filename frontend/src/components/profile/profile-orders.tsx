@@ -13,7 +13,6 @@ import { IOrderPaginationResult } from '../../utils/types'
 import Pagination from '../pagination'
 import usePagination from '../pagination/helpers/usePagination'
 import styles from './profile.module.scss'
-import useCsrfToken from '../../hooks/useCsrfToken'
 
 export default function ProfileOrders() {
     const dispatch = useDispatch()
@@ -104,7 +103,13 @@ export default function ProfileOrders() {
         [searchParams, dispatch, setSearchParams]
     )
 
-    const csrfToken = useCsrfToken()
+function getCsrfToken() {
+  const cookieValue = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('XSRF-TOKEN='))
+    ?.split('=')[1];
+  return cookieValue || '';
+}
     
     return (
         <main
@@ -120,7 +125,7 @@ export default function ProfileOrders() {
                 className={styles.profile__formSearch}
                 onSubmit={(e) => handleSearch(e, searchOrder)}
             >
-                <input type="hidden" name="_csrf" value={csrfToken} />
+                <input type="hidden" name="_csrf" value={getCsrfToken()} />
                 <Input
                     onChange={handleInputChange}
                     extraClassLabel={styles.profile__searchLabel}

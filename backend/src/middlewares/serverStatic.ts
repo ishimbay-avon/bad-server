@@ -2,35 +2,34 @@ import { NextFunction, Request, Response } from 'express'
 import fs from 'fs'
 import path from 'path'
 
-// 7. Защита от Path Traversal
 export default function serveStatic(baseDir: string) {
-    // Нормализуем базовую директорию сразу
-    const absoluteBase = path.resolve(baseDir);
-
     return (req: Request, res: Response, next: NextFunction) => {
-        // Получаем путь из запроса и убираем возможные двойные точки и слеши
-        const unsafePath = req.path;
-        const filePath = path.resolve(absoluteBase, `.${  unsafePath}`);
+        try {
+            const safePath = decodeURIComponent(req.path.replace(/\0/g, ''))
 
-        // Проверяем, что итоговый путь находится внутри baseDir
-        if (!filePath.startsWith(absoluteBase + path.sep)) {
-            // Попытка обхода директорий!
-            return res.status(403).send('Доступ запрещён');
-        }
-
-        // Проверяем, существует ли файл
-        fs.access(filePath, fs.constants.F_OK, (err) => {
-            if (err) {
-                // Файл не существует — передаём дальше
-                return next();
+            if (safePath.includes('..')) {
+                return res.status(403).send({ message: 'Доступ запрещён' })
             }
-            // Файл существует, отправляем его клиенту
-            return res.sendFile(filePath, (error) => {
-                if (error) {
-                    next(error);
+
+            const resolvedPath = path.resolve(baseDir, `.${  safePath}`)
+
+            if (!resolvedPath.startsWith(path.resolve(baseDir))) {
+                return res.status(403).send({ message: 'Доступ запрещён' })
+            }
+
+            fs.access(resolvedPath, fs.constants.F_OK, (err) => {
+                if (err) {
+                    return next()
                 }
-            });
-        });
+
+                return res.sendFile(resolvedPath, (error) => {
+                    if (error) {
+                        next(error)
+                    }
+                })
+            })
+        } catch (error) {
+            return next(error)
+        }
     }
 }
-
