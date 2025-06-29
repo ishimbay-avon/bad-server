@@ -41,9 +41,13 @@ const createProduct = async (
     res: Response,
     next: NextFunction
 ) => {
+    console.log('createProduct=>')
     try {
         let { title, description, category } = req.body
         const { price, image } = req.body
+
+
+console.log('createProduct=>', req.body)
 
         // Экранирование и обрезка полей
         title = escape(String(title)).slice(0, 100)
@@ -52,9 +56,11 @@ const createProduct = async (
 
         // Безопасное имя файла
         if (image && image.fileName) {
-            image.fileName = basename(image.fileName)
+            console.log('image && image.fileName 1=>', image.fileName)
+            image.fileName = `\\${process.env.UPLOAD_PATH}\\${image.originalName}` // basename(image.fileName)
+            console.log('image && image.fileName 2=>', image.fileName)
             movingFile(
-                image.fileName,
+                image.originalName,
                 join(__dirname, `../public/${process.env.UPLOAD_PATH_TEMP}`),
                 join(__dirname, `../public/${process.env.UPLOAD_PATH}`)
             )
@@ -67,9 +73,10 @@ const createProduct = async (
             price,
             title,
         })
-
+console.log('product=>', product)
         return res.status(constants.HTTP_STATUS_CREATED).send(product)
     } catch (error) {
+        console.log('createProduct=>', error)
         if (error instanceof MongooseError.ValidationError) {
             return next(new BadRequestError(error.message))
         }
@@ -90,7 +97,7 @@ const updateProduct = async (
 ) => {
     try {
         const { productId } = req.params
-
+console.log('product=>', req.params)
         if (typeof productId !== 'string') {
             return next(new BadRequestError('Неверный формат ID'))
         }
@@ -122,6 +129,7 @@ const updateProduct = async (
 
         return res.send(product)
     } catch (error) {
+        console.log('product=>', error)
         if (error instanceof MongooseError.ValidationError) {
             return next(new BadRequestError(error.message))
         }
@@ -145,7 +153,7 @@ const deleteProduct = async (
 ) => {
     try {
         const { productId } = req.params
-
+console.log('product=>', req.params)
         if (typeof productId !== 'string') {
             return next(new BadRequestError('Неверный формат ID'))
         }
@@ -156,6 +164,7 @@ const deleteProduct = async (
 
         return res.send(product)
     } catch (error) {
+        console.log('product=>', error)
         if (error instanceof MongooseError.CastError) {
             return next(new BadRequestError('Передан не валидный ID товара'))
         }

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { constants } from 'http2'
-// import path from 'path'
+import path from 'path'
 import BadRequestError from '../errors/bad-request-error'
 
 const ALLOWED_MIME_TYPES = [
@@ -21,6 +21,12 @@ export const uploadFile = async (
   res: Response,
   next: NextFunction
 ): Promise<Response | void> => {
+
+    console.log(req.file);
+    console.log(req.file?.mimetype);
+    console.log(req.file?.originalname);
+    console.log(req.file?.size);
+
   if (!req.file) {
     return next(new BadRequestError('Файл не загружен'))
   }
@@ -43,11 +49,11 @@ export const uploadFile = async (
   }
 
   try {
-    // const fileName = process.env.UPLOAD_PATH_TEMP
-    //   ? path.join('/', process.env.UPLOAD_PATH_TEMP, req.file.filename)
-    //   : path.join('/', req.file.filename)
-
-    return res.status(constants.HTTP_STATUS_CREATED).send({ fileName:req.file.filename })
+    const fileName2 = process.env.UPLOAD_PATH_TEMP
+      ? path.join('/', process.env.UPLOAD_PATH_TEMP, req.file.filename)
+      : path.join('/', req.file.filename)
+console.log(fileName2);
+    return res.status(constants.HTTP_STATUS_CREATED).send({ fileName:fileName2, originalName:req.file.filename })
   } catch (error) {
     return next(error)
   }
