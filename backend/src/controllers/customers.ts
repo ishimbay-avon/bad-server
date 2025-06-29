@@ -39,7 +39,7 @@ export const getCustomers = async (
     const query = sanitizeObject(req.query)
 
     const page = Math.max(1, Number(query.page) || 1)
-    const limit = Math.min(50, Math.max(1, Number(query.limit) || 10))
+    const limit = Math.min(Number(query.limit), 10)
 
     const allowedSortFields = ['createdAt', 'totalAmount', 'orderCount', 'name']
     const sortField = allowedSortFields.includes(query.sortField as string)
@@ -265,4 +265,3 @@ export const deleteCustomer = async (
     next(error)
   }
 }
-
