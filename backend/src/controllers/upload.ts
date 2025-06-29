@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { constants } from 'http2'
-import path from 'path'
+// import path from 'path'
 import BadRequestError from '../errors/bad-request-error'
 
 const ALLOWED_MIME_TYPES = [
@@ -43,11 +43,11 @@ export const uploadFile = async (
   }
 
   try {
-    const fileName = process.env.UPLOAD_PATH_TEMP
-      ? path.join('/', process.env.UPLOAD_PATH_TEMP, req.file.filename)
-      : path.join('/', req.file.filename)
+    // const fileName = process.env.UPLOAD_PATH_TEMP
+    //   ? path.join('/', process.env.UPLOAD_PATH_TEMP, req.file.filename)
+    //   : path.join('/', req.file.filename)
 
-    return res.status(constants.HTTP_STATUS_CREATED).send({ fileName })
+    return res.status(constants.HTTP_STATUS_CREATED).send({ fileName:req.file.filename })
   } catch (error) {
     return next(error)
   }
