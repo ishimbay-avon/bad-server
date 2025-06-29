@@ -54,7 +54,7 @@ export const uploadFile = async (
       : path.join('/', req.file.filename)
 console.log(fileName);
     // return res.status(constants.HTTP_STATUS_CREATED).send({ fileName:fileName2, originalName:req.file.filename })
-    return res.status(constants.HTTP_STATUS_CREATED).send({ fileName })
+    return res.status(constants.HTTP_STATUS_CREATED).send({ fileName:req.file.filename })
   } catch (error) {
     return next(error)
   }

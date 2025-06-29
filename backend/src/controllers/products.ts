@@ -57,8 +57,8 @@ console.log('createProduct=>', req.body)
         // Безопасное имя файла
         if (image && image.fileName) {
             console.log('image && image.fileName 1=>', image.fileName)
-            image.fileName = `/${process.env.UPLOAD_PATH}/${basename(image.fileName)}`
-            image.originalName = basename(image.fileName)        
+            image.originalName = image.fileName
+            image.fileName = `/${process.env.UPLOAD_PATH}/${image.fileName}`                   
             console.log('image && image.fileName 2=>', image.fileName)
             movingFile(
                 image.originalName,
