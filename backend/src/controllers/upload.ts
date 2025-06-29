@@ -3,6 +3,19 @@ import { constants } from 'http2'
 import path from 'path'
 import BadRequestError from '../errors/bad-request-error'
 
+const ALLOWED_MIME_TYPES = [
+  'image/png',
+  'image/jpg',
+  'image/jpeg',
+  'image/gif',
+  'image/svg+xml'
+]
+
+const isFilenameSafe = (filename: string): boolean => {
+  const unsafeChars = /[<>:"/\\|?*]|^(?:CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$/i
+  return !unsafeChars.test(filename)
+}
+
 export const uploadFile = async (
   req: Request,
   res: Response,
@@ -10,6 +23,14 @@ export const uploadFile = async (
 ): Promise<Response | void> => {
   if (!req.file) {
     return next(new BadRequestError('Файл не загружен'))
+  }
+
+  if (!ALLOWED_MIME_TYPES.includes(req.file.mimetype)) {
+      throw new BadRequestError('Недопустимый тип файла')
+  }
+
+  if (!isFilenameSafe(req.file.originalname)) {
+      throw new BadRequestError('Недопустимое имя файла')
   }
 
   if (req.file.size < 2 * 1024) {

@@ -42,6 +42,7 @@ const types = [
     'image/svg+xml',
 ]
 
+
 const fileFilter = (
     _req: Request,
     file: Express.Multer.File,
@@ -50,7 +51,6 @@ const fileFilter = (
     if (!types.includes(file.mimetype)) {
         return cb(null, false)
     }
-
     return cb(null, true)
 }
 // 1. Защита от XSS (Межсайтовый скриптинг)
