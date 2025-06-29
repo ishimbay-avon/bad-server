@@ -17,7 +17,7 @@ function isValidObjectId(id: string): boolean {
 const getProducts = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const pageNum = Math.max(Number(req.query.page) || 1, 1)
-    const limitNum = Math.min(Number(req.query.limit) || 5, 50)
+    const limitNum = Math.min(Number(req.query.limit) || 5, 5)
 
     const options = {
       skip: (pageNum - 1) * limitNum,

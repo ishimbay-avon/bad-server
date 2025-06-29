@@ -170,7 +170,7 @@ app.use(urlencoded({ extended: true, limit: '10kb' }))
 app.use(
     rateLimit({
       windowMs: 15 * 60 * 1000, // 15 минут
-      max: 100,
+      max: 20,
       message: 'Слишком много запросов с этого IP, попробуйте позже',
       standardHeaders: true,
       legacyHeaders: false,
