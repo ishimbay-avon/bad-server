@@ -53,7 +53,7 @@ const fileFilter = (
     }
     return cb(null, true)
 }
-// 1. Защита от XSS (Межсайтовый скриптинг)
+// Защита от XSS (Межсайтовый скриптинг)
 // Санитизация файлов
 export default multer({ 
     storage, 

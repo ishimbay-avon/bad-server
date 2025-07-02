@@ -4,26 +4,22 @@ import NotFoundError from '../errors/not-found-error'
 import Order from '../models/order'
 import User, { IUser } from '../models/user'
 
-// Функция для очистки объекта от ключей с $ и .
 function sanitizeObject(obj: any): any {
   if (typeof obj !== 'object' || obj === null) return obj;
   if (Array.isArray(obj)) return obj.map(sanitizeObject);
 
   const cleanObj: any = {};
   Object.keys(obj).forEach((key) => {
-    if (key.startsWith('$') || key.includes('.')) return; // пропускаем опасные ключи
+    if (key.startsWith('$') || key.includes('.')) return;
     cleanObj[key] = sanitizeObject(obj[key]);
   });
   return cleanObj;
 }
 
-
-// Экранирование пользовательского ввода для RegExp (защита от ReDoS)
 function escapeRegex(text: string): string {
   return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
-// Проверка валидности ObjectId
 function isValidObjectId(id: string): boolean {
   return Types.ObjectId.isValid(id) && (new Types.ObjectId(id)).toString() === id
 }
@@ -35,7 +31,6 @@ export const getCustomers = async (
   next: NextFunction
 ) => {
   try {
-    // Санитайзинг и валидация query
     const query = sanitizeObject(req.query)
 
     const page = Math.max(1, Number(query.page) || 1)
@@ -111,7 +106,6 @@ export const getCustomers = async (
       const safeSearch = escapeRegex(query.search)
       const searchRegex = new RegExp(safeSearch, 'i')
 
-      // Ищем заказы с совпадением по адресу доставки
       const orders = await Order.find(
         {
           $or: [{ deliveryAddress: searchRegex }],
@@ -210,10 +204,8 @@ export const updateCustomer = async (
       return next(new NotFoundError('Неверный ID пользователя'))
     }
 
-    // Санитайзинг тела запроса
     const body = sanitizeObject(req.body)
 
-    // Разрешённые поля для обновления
     const updateData: Partial<IUser> = {}
     if (typeof body.name === 'string') updateData.name = body.name
     if (typeof body.email === 'string') updateData.email = body.email

@@ -1,7 +1,7 @@
 import { Joi, celebrate } from 'celebrate'
 import { Types } from 'mongoose'
 
-// 5. Защита от ReDoS
+// Защита от ReDoS
 export const phoneRegExp = /^[\d\s()+-]{5,20}$/;
 
 export enum PaymentType {
@@ -9,7 +9,6 @@ export enum PaymentType {
     Online = 'online',
 }
 
-// Валидация id с защитой
 const objectIdValidator = (value: string, helpers: any) => {
     if (value.length === 24 && Types.ObjectId.isValid(value)) {
         return value;
@@ -17,7 +16,6 @@ const objectIdValidator = (value: string, helpers: any) => {
     return helpers.message({ custom: 'Невалидный id' });
 };
 
-// валидация id
 export const validateOrderBody = celebrate({
     body: Joi.object().keys({
         items: Joi.array()
