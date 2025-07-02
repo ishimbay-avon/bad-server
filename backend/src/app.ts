@@ -116,6 +116,7 @@ import cors from 'cors'
 import 'dotenv/config'
 import express, { json, urlencoded } from 'express'
 import mongoose from 'mongoose'
+import fs from 'fs';
 import path from 'path'
 
 import helmet from 'helmet' // 1. Защита от XSS (Межсайтовый скриптинг)
@@ -128,6 +129,13 @@ import routes from './routes'
 
 const { PORT = 3000 } = process.env
 const app = express()
+
+
+const tempDir = path.join(__dirname, 'public', process.env.UPLOAD_PATH_TEMP || 'temp');
+if (!fs.existsSync(tempDir)) {
+  fs.mkdirSync(tempDir, { recursive: true });
+  console.log(`Папка создана: ${tempDir}`);
+}
 
 // 1. Защита от XSS (Межсайтовый скриптинг)
 app.use(helmet({
