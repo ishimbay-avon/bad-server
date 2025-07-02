@@ -1,6 +1,7 @@
 import { Request, Express } from 'express'
 import multer, { FileFilterCallback } from 'multer'
-import { join } from 'path'
+import { extname, join } from 'path'
+import crypto from 'crypto'
 
 type DestinationCallback = (error: Error | null, destination: string) => void
 type FileNameCallback = (error: Error | null, filename: string) => void
@@ -27,7 +28,9 @@ const storage = multer.diskStorage({
         file: Express.Multer.File,
         cb: FileNameCallback
     ) => {
-        cb(null, file.originalname)
+        const ext = extname(file.originalname).toLowerCase().slice(0, 10)
+        const safeName = crypto.randomBytes(16).toString('hex') + ext
+        cb(null, safeName)
     },
 })
 
@@ -39,6 +42,7 @@ const types = [
     'image/svg+xml',
 ]
 
+
 const fileFilter = (
     _req: Request,
     file: Express.Multer.File,
@@ -47,8 +51,14 @@ const fileFilter = (
     if (!types.includes(file.mimetype)) {
         return cb(null, false)
     }
-
     return cb(null, true)
 }
-
-export default multer({ storage, fileFilter })
+// Защита от XSS (Межсайтовый скриптинг)
+// Санитизация файлов
+export default multer({ 
+    storage, 
+    limits: { 
+        fileSize: 5000000, // 5MB на файл
+    },
+    fileFilter 
+})

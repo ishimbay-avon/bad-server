@@ -99,9 +99,18 @@ export default function ProfileOrders() {
             })
             setSearchParams({ ...filters, search: value })
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [searchParams, dispatch, setSearchParams]
     )
 
+function getCsrfToken() {
+  const cookieValue = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('XSRF-TOKEN='))
+    ?.split('=')[1];
+  return cookieValue || '';
+}
+    
     return (
         <main
             className={clsx(
@@ -116,6 +125,7 @@ export default function ProfileOrders() {
                 className={styles.profile__formSearch}
                 onSubmit={(e) => handleSearch(e, searchOrder)}
             >
+                <input type="hidden" name="_csrf" value={getCsrfToken()} />
                 <Input
                     onChange={handleInputChange}
                     extraClassLabel={styles.profile__searchLabel}

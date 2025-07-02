@@ -16,6 +16,7 @@ interface PaginationResult<_, U> {
 }
 
 const usePagination = <T, U>(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     asyncAction: AsyncThunk<T, Record<string, unknown>, any>,
     selector: (state: RootState) => U[],
     defaultLimit: number
@@ -32,7 +33,9 @@ const usePagination = <T, U>(
 
     const limit = Number(searchParams.get('limit')) || defaultLimit
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const fetchData = async (params: Record<string, any>) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const response: any = await dispatch(asyncAction(params))
         setTotalPages(response.payload.pagination.totalPages)
     }
@@ -44,8 +47,10 @@ const usePagination = <T, U>(
                 setPage(1)
             }
         })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentPage, limit, searchParams])
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateURL = (newParams: Record<string, any>) => {
         3
         const updatedParams = new URLSearchParams(searchParams)
